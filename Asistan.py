@@ -9,7 +9,6 @@ import wikipedia
 import time
 import random
 
-
 wikipedia.set_lang("tr")
 
 
@@ -87,7 +86,7 @@ def main():
 	for i in k.split():
 		if i in wikikomut:
 			konu = k.replace(i, "")
-			konuş(f"Wikipedia'da {konu}aratılıyor...")
+			konuş(f"Wikipedia'da {konu} aratılıyor...")
 			try:
 				print(wikipedia.summary(konu, 2))
 				yazmadan_konuş("Bunu buldum. Okumamı ister misin?")
@@ -125,7 +124,7 @@ Yapabileceklerim şimdilik bu kadar..."""
 			print(yardım)
 			tts = gTTS(text = "Yapabileceklerimi listeledim", lang = "tr", slow = False)
 			tts.save("mtts.mp3")
-			playsound(".\mtts.mp3")
+			playsound("mtts.mp3")
 			os.remove("mtts.mp3")
 			time.sleep(6)
 			komut_işlendi = True
@@ -189,7 +188,8 @@ Yapabileceklerim şimdilik bu kadar..."""
 
 
 	elif komut_işlendi == False:
-		pass #konuş("Dediğiniz anlaşılmadı veya nasıl yanıt verileceğini henüz bilmiyorum.")
+		print("Dediğiniz anlaşılmadı veya nasıl yanıt verileceğini henüz bilmiyorum.")
+		yazmadan_konuş("Anlaşılmadı")
  
 
 if __name__ == "__main__":
