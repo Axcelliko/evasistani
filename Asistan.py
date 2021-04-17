@@ -8,6 +8,7 @@ import pywhatkit
 import wikipedia
 import time
 import random
+import feedparser
 
 wikipedia.set_lang("tr")
 
@@ -34,7 +35,7 @@ def dinle():
 			#Konsol ekranını temizler.
 			cls()
 			print("Dinleniyor...")
-			r.adjust_for_ambient_noise(source)
+			#r.adjust_for_ambient_noise(source)
 			audio = r.listen(source)
 			try:
 				speech = r.recognize_google(audio, language = "tr-TR")
@@ -52,7 +53,7 @@ def dinle_custom(text = " "):
 
 		with mic as source:
 			print(text)
-			r.adjust_for_ambient_noise(source)
+			#r.adjust_for_ambient_noise(source)
 			audio = r.listen(source)
 			try:
 				speech = r.recognize_google(audio, language = "tr-TR")
@@ -119,6 +120,7 @@ Wikipedia'da araştırabileceğim herhangi bir konu
 Tanınmış bir kişinin doğum günü
 Youtubedan dinlemek istediğin bir müzik ("'müzik ismi' çal" demen yeterli)
 Google'dan aratabileceğim bir konu ("'konu' arat" demen yeterli)
+Herhangi bir şehir veya ilin hava durumu
 Yapabileceklerim şimdilik bu kadar..."""
 
 			print(yardım)
@@ -137,7 +139,23 @@ Yapabileceklerim şimdilik bu kadar..."""
 			konuş(cvp)
 			komut_işlendi = True
 
-
+	#Çok iyi çalışmıyor, yapım aşamasında
+	havakomut = ["hava"]
+	for i in havakomut:
+		if i in k:
+			try:
+				şehir = k.split("'")[0]
+				parse = feedparser.parse(f"http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=EUR|TR|00000|{şehir}|")
+				parse = parse["entries"][0]["summary"]
+				parse = parse.split()
+				if parse[2] == "additional":
+					konuş("Bulunamadı")
+				else:
+					hava = (f"{parse[2]} {parse[4]} {parse[5]}")
+					konuş(hava)
+			except Exception: #UnicodeError
+				pass
+			komut_işlendi = True
 
 	if "saat" in k:
 		now = datetime.now()
