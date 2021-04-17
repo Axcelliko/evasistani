@@ -182,7 +182,7 @@ Yapabileceklerim şimdilik bu kadar..."""
 					çeviri += " "
 			except KeyError:
 				pass
-		konuş(çeviri[1:])
+		konuş(çeviri)
 		komut_işlendi = True
 
 
