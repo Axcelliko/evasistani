@@ -9,6 +9,7 @@ import wikipedia
 import time
 import random
 
+
 wikipedia.set_lang("tr")
 
 
