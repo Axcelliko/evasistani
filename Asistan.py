@@ -9,6 +9,8 @@ import wikipedia
 import time
 import random
 import feedparser
+from currency_converter import CurrencyConverter
+from Variables import *
 
 wikipedia.set_lang("tr")
 
@@ -63,21 +65,23 @@ def dinle_custom(text = " "):
 				break
 	return speech.lower()
 
-
+#Bu kısım asistanın bir ismi olması istendiği durumda kullanılır.
+İSİM = None
 
 def main():
 	while 1:
 		komut_işlendi = False
-		k = dinle()
-		break
-		#Bu kısım asistanın bir ismi olması istendiği durumda kullanılır.
-
-		# if 'isim ' in k2:
-		# 	k = k2.replace('isim ', '')
-		# 	break
-		# if ' isim' in k2:
-		# 	k = k2.replace(' isim', '')
-		# 	break
+		k2 = dinle()
+		if İSİM != None:
+			if f'{İSİM} ' in k2:
+				k = k2.replace(f'{İSİM} ', '')
+				break
+			if f' {İSİM}' in k2:
+				k = k2.replace(f' {İSİM}', '')
+				break
+		else:
+			k = k2
+			break
 
 	print(f"Duyulan: {k}")
 
@@ -110,7 +114,7 @@ def main():
 			komut_işlendi = True
 
 
-	komutlar = ["neler yapabilirsin", "komutlar neler", "ne yapabilirsin", "ne yapabiliyorsun"]
+	komutlar = ["neler yapabilirsin", "komutlar neler", "ne yapabilirsin", "ne yapabiliyorsun", "neler yapabiliyorsun"]
 	for i in komutlar:
 		if i in k:
 			yardım = """Bana sorabileceklerin:
@@ -121,6 +125,7 @@ Tanınmış bir kişinin doğum günü
 Youtubedan dinlemek istediğin bir müzik ("'müzik ismi' çal" demen yeterli)
 Google'dan aratabileceğim bir konu ("'konu' arat" demen yeterli)
 Herhangi bir şehir veya ilin hava durumu
+Para kurlarını çevirme
 Yapabileceklerim şimdilik bu kadar..."""
 
 			print(yardım)
@@ -156,6 +161,29 @@ Yapabileceklerim şimdilik bu kadar..."""
 			except Exception: #UnicodeError
 				pass
 			komut_işlendi = True
+
+	#Şimdilik sadece dolar, euro ve tl sorulabilir.
+	kurkomut = ["kaç"]
+	for i in k.split():
+		if i in kurkomut:
+			if "€" in k:
+				eur_miktar = k.split("€")[1]
+				k1 = k.replace("€", "")
+				k = k1.replace(" ", " euro ", 1)
+			if "bir" in k:
+				k = k.replace("bir", "1")
+			if "türk lirası" in k:
+				k = k.replace("türk lirası", "tl")
+			if en_az_iki(k.split(), kurlar):
+				c = CurrencyConverter()
+				miktar = k.split()[0]
+				if "kaç" in k:
+					çevrilen = kurdict[k.split()[(k.split().index("kaç")) - 1]]
+					kur = kurdict[k.split()[(k.split().index("kaç")) + 1]]
+					sonuc = round(c.convert(miktar, çevrilen, kur), 2)
+					konuş(f"{miktar} {çevrilen}, {sonuc} {kur}")
+					komut_işlendi = True
+
 
 	if "saat" in k:
 		now = datetime.now()
