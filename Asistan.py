@@ -11,12 +11,22 @@ import random
 import feedparser
 from currency_converter import CurrencyConverter
 from Variables import *
+from googletrans import Translator
+import trnlp
+import re
 
 wikipedia.set_lang("tr")
 
 
 def konuş(text_input):
 	tts = gTTS(text = text_input, lang = "tr", slow = False)
+	print(text_input)
+	tts.save("mtts.mp3")
+	playsound("mtts.mp3")
+	os.remove("mtts.mp3")
+
+def konuş_dil(text_input, lng):
+	tts = gTTS(text = text_input, lang = lng, slow = False)
 	print(text_input)
 	tts.save("mtts.mp3")
 	playsound("mtts.mp3")
@@ -91,6 +101,8 @@ def main():
 	for i in k.split():
 		if i in wikikomut:
 			konu = k.replace(i, "")
+			if len(konu.split()) > 3:
+				break
 			konuş(f"Wikipedia'da {konu} aratılıyor...")
 			try:
 				print(wikipedia.summary(konu, 2))
@@ -125,6 +137,7 @@ Tanınmış bir kişinin doğum günü
 Youtubedan dinlemek istediğin bir müzik ("'müzik ismi' çal" demen yeterli)
 Google'dan aratabileceğim bir konu ("'konu' arat" demen yeterli)
 Herhangi bir şehir veya ilin hava durumu
+Bir cümlenin başka bir dile çevrilmiş hali
 Para kurlarını çevirme
 Yapabileceklerim şimdilik bu kadar..."""
 
@@ -183,6 +196,20 @@ Yapabileceklerim şimdilik bu kadar..."""
 					sonuc = round(c.convert(miktar, çevrilen, kur), 2)
 					konuş(f"{miktar} {çevrilen}, {sonuc} {kur}")
 					komut_işlendi = True
+
+
+	if "çevir" in k:
+		if "ingilizce'ye" in k:
+			k.replace("ingilizce'ye", "ingilizceye")
+		for i in diller:
+			if dil_algıla(i) in k:
+				t = Translator()
+				dil = dildict[re.search(dil_regex[0][0], k).group()]
+				text = k.replace("çevir", "")
+				text = text.replace(dil_algıla(k), "")
+				konuş_dil((t.translate(text, src = "tr", dest = dil).text), dil)
+				komut_işlendi = True
+				break
 
 
 	if "saat" in k:
