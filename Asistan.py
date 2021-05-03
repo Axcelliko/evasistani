@@ -44,11 +44,12 @@ def dinle():
 		mic = sr.Microphone()
 
 		with mic as source:
-			#Konsol ekranını temizler.
 			cls()
 			print("Dinleniyor...")
-			#r.adjust_for_ambient_noise(source)
-			audio = r.listen(source)
+			try:
+				audio = r.listen(source, timeout=6, phrase_time_limit=10)
+			except sr.WaitTimeoutError:
+				pass
 			try:
 				speech = r.recognize_google(audio, language = "tr-TR")
 			except Exception as e:
@@ -136,7 +137,7 @@ Wikipedia'da araştırabileceğim herhangi bir konu
 Tanınmış bir kişinin doğum günü
 Youtubedan dinlemek istediğin bir müzik ("'müzik ismi' çal" demen yeterli)
 Google'dan aratabileceğim bir konu ("'konu' arat" demen yeterli)
-Herhangi bir şehir veya ilin hava durumu
+Herhangi bir şehir veya ilçenin hava durumu
 Bir cümlenin başka bir dile çevrilmiş hali
 Para kurlarını çevirme
 Yapabileceklerim şimdilik bu kadar..."""
@@ -158,7 +159,7 @@ Yapabileceklerim şimdilik bu kadar..."""
 			komut_işlendi = True
 
 	#Çok iyi çalışmıyor, yapım aşamasında
-	havakomut = ["hava"]
+	havakomut = ["hava", "derece"]
 	for i in havakomut:
 		if i in k:
 			try:
@@ -191,23 +192,31 @@ Yapabileceklerim şimdilik bu kadar..."""
 				c = CurrencyConverter()
 				miktar = k.split()[0]
 				if "kaç" in k:
-					çevrilen = kurdict[k.split()[(k.split().index("kaç")) - 1]]
-					kur = kurdict[k.split()[(k.split().index("kaç")) + 1]]
-					sonuc = round(c.convert(miktar, çevrilen, kur), 2)
-					konuş(f"{miktar} {çevrilen}, {sonuc} {kur}")
+					try:
+						çevrilen = kurdict[k.split()[(k.split().index("kaç")) - 1]]
+						kur = kurdict[k.split()[(k.split().index("kaç")) + 1]]
+						sonuc = round(c.convert(miktar, çevrilen, kur), 2)
+						konuş(f"{miktar} {çevrilen}, {sonuc} {kur}")
+					except Exception:
+						konuş("Anlaşılmadı")
 					komut_işlendi = True
 
 
 	if "çevir" in k:
+		if "i̇ngilizceye" in k:
+			k = k.replace("i̇ngilizceye", "ingilizceye")
 		if "ingilizce'ye" in k:
-			k.replace("ingilizce'ye", "ingilizceye")
+			k = k.replace("ingilizce'ye", "ingilizceye")
 		for i in diller:
 			if dil_algıla(i) in k:
 				t = Translator()
 				dil = dildict[re.search(dil_regex[0][0], k).group()]
 				text = k.replace("çevir", "")
 				text = text.replace(dil_algıla(k), "")
-				konuş_dil((t.translate(text, src = "tr", dest = dil).text), dil)
+				try:
+					konuş_dil((t.translate(text, src = "tr", dest = dil).text), dil)
+				except Exception:
+					konuş("Anlaşılmadı")
 				komut_işlendi = True
 				break
 
@@ -243,10 +252,10 @@ Yapabileceklerim şimdilik bu kadar..."""
 		pywhatkit.search(konu)
 		komut_işlendi = True
 
-	elif "kuş diline çevir" in k:
+	elif "kuşdili" in k:
 		sesli = {"a":"aga", "e":"ege", "i":"igi", "ı":"ıgı", "o":"ogo", "ö":"ögö", "u":"ugu", "ü":"ügü", "b":"b", "c":"c", "ç":"ç", "d":"d", "f":"f", "g":"g", "ğ":"ğ", "h":"h", "j":"j", "k":"k", "l":"l", "m":"m", "n":"n", "p":"p", "r":"r", "s":"s", "ş":"ş", "t":"t", "v":"v", "y":"y", "z":"z"}
 		çeviri = ""
-		yazı = k.replace("kuş diline çevir", "")
+		yazı = k.replace("kuşdili", "")
 		for i in yazı:
 			try:
 				if not i == " ":
