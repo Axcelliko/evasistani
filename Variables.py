@@ -44,8 +44,7 @@ def dil_algıla(text):
 
 
 if __name__ == '__main__':
-	y = "patlıcanı ingilizceye çevir sonra da ispanyolcaya"
-	y1 = ""
+	pass
 
 
 
