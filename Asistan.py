@@ -159,11 +159,14 @@ Yapabileceklerim şimdilik bu kadar..."""
 			komut_işlendi = True
 
 	#Çok iyi çalışmıyor, yapım aşamasında
-	havakomut = ["hava", "derece"]
+	havakomut = ["hava"]
 	for i in havakomut:
 		if i in k:
 			try:
-				şehir = k.split("'")[0]
+				if "'" in k:
+					şehir = k.split("'")[0]
+				else:
+					şehir = k.split()[0]
 				parse = feedparser.parse(f"http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=EUR|TR|00000|{şehir}|")
 				parse = parse["entries"][0]["summary"]
 				parse = parse.split()
