@@ -1,7 +1,7 @@
-speech_recognition (pip install SpeechRecognition)
-gTTS (pip install gTTS)
-playsound (pip install playsound)
-pywhatkit (pip install pywhatkit)
-wikipedia (pip install wikipedia)
-feedparser (pip install feedparser)
-googletrans (pip install googletrans)
+SpeechRecognition
+gTTS
+playsound
+pywhatkit
+wikipedia
+feedparser
+googletrans
