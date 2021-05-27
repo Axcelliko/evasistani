@@ -11,7 +11,7 @@ kurdict = {
 	"euro": "EUR",
 	"€": "EUR"
 }
-dil_regex = [('(çince|ispanyolca|portekizce|japonca|italyanca|ingilizce|fransızca|arapça|i̇ngilizce)', '{DİL}')]
+dil_regex = [('(çince|ispanyolca|portekizce|japonca|italyanca|ingilizce|fransızca|arapça|i̇ngilizce|rusça)', '{DİL}')]
 dildict = {
 	"ingilizce": "en",
 	"ispanyolca": "es",
@@ -20,7 +20,8 @@ dildict = {
 	"italyanca": "it",
 	"fransızca": "fr",
 	"arapça": "ar",
-	"japonca": "ja"
+	"japonca": "ja",
+	"rusça": "ru"
 }
 def en_az_iki(a, b):
     return len(set(a) & set(b)) >= 2
@@ -46,15 +47,3 @@ def dil_algıla(text):
 
 if __name__ == '__main__':
 	pass
-
-
-
-
-
-
-
-
-
-
-
-
