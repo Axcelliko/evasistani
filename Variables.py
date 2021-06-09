@@ -23,6 +23,18 @@ dildict = {
 	"japonca": "ja",
 	"rusça": "ru"
 }
+
+def asciify(text):
+	chardict = {"a":"a", "e":"e", "i":"i", "ı":"i", "o":"o", "ö":"o", "u":"u", "ü":"u", "b":"b", "c":"c", "ç":"c", "d":"d", "f":"f", "g":"g", "ğ":"g", "h":"h", "j":"j", "k":"k", "l":"l", "m":"m", "n":"n", "p":"p", "r":"r", "s":"s", "ş":"s", "t":"t", "v":"v", "y":"y", "z":"z", "'":"'"}
+	newtext = ""
+	for i in text:
+		if not i == " ":
+			newtext += chardict[i]
+		else: 
+			newtext += " "
+	return newtext
+
+
 def en_az_iki(a, b):
     return len(set(a) & set(b)) >= 2
 

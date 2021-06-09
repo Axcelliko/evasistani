@@ -64,6 +64,7 @@ def dinle():
 			print("Dinleniyor...")
 			current_text = "Dinleniyor..."
 			duyulan = ""
+			#r.adjust_for_ambient_noise(source)
 			try:
 				audio = r.listen(source, timeout=6, phrase_time_limit=10)
 			except sr.WaitTimeoutError:
@@ -74,7 +75,7 @@ def dinle():
 				print("Dediğiniz anlaşılmadı...")
 			else:
 				break
-	return speech.lower()
+	return speech.lower().replace("̇","")
 
 
 def dinle_custom(text = " "):
@@ -89,14 +90,17 @@ def dinle_custom(text = " "):
 			current_text = text
 			duyulan = ""
 			#r.adjust_for_ambient_noise(source)
-			audio = r.listen(source)
+			try:
+				audio = r.listen(source, timeout=6, phrase_time_limit=10)
+			except sr.WaitTimeoutError:
+				pass
 			try:
 				speech = r.recognize_google(audio, language = "tr-TR")
 			except Exception as e:
 				print("Dediğiniz anlaşılmadı...")
 			else:
 				break
-	return speech.lower()
+	return speech.lower().replace("̇","")
 
 def hatırlatma_kontrol():
 	global hatırlatma_text
@@ -144,14 +148,13 @@ def main():
 					k = k2.replace(f' {İSİM}', '')
 					break
 			else:
-				k = k2
+				k = k2.lower()
 				break
-
 		print(f"Duyulan: {k}")
 		duyulan = f"Duyulan: {k}"
 
 
-		islemkomut = ["artı", "topla", "eksi", "çıkar", "böl", "çarp", "üssü", "faktöriyel", "kök", "+", "-", "/", "x"]
+		islemkomut = ["artı", "topla", "eksi", "çıkar", "böl", "çarp", "kere", "üssü", "üzeri", "faktöriyel", "kök", "+", "-", "/", "x"]
 		for i in islemkomut:
 			if i in k:
 				k = k.replace(",", ".")
@@ -169,9 +172,9 @@ def main():
 						sonuc = sy1 - sy2
 					elif (islem == "/") or (islem == "böl"):
 						sonuc = sy1 / sy2
-					elif (islem == "x") or (islem == "çarp"):
+					elif (islem == "x") or (islem == "çarp") or (islem == "kere"):
 						sonuc = sy1 * sy2
-					elif islem == "üssü":
+					elif (islem == "üssü") or (islem == "üzeri"):
 						sonuc = sy1 ** sy2
 					elif islem == "faktöriyel":
 						sonuc = factorial(sy1)
@@ -232,22 +235,21 @@ def main():
 				konuş(cvp)
 				komut_işlendi = True
 
-		#Çok iyi çalışmıyor, yapım aşamasında
 		havakomut = ["hava"]
 		for i in havakomut:
 			if i in k:
 				try:
 					if "'" in k:
-						şehir = k.split("'")[0]
+						şehir = asciify(k.split("'")[0])
 					else:
-						şehir = k.split()[0]
+						şehir = asciify(k.split()[0])
 					parse = feedparser.parse(f"http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=EUR|TR|00000|{şehir}|")
 					parse = parse["entries"][0]["summary"]
 					parse = parse.split()
 					if parse[2] == "additional":
 						konuş("Bulunamadı")
 					else:
-						hava = (f"{parse[2]} {parse[4]} {parse[5]}")
+						hava = (f"{trnlp.deascii(parse[2])} {parse[4]} {parse[5]}")
 						konuş(hava)
 				except Exception: #UnicodeError
 					pass
@@ -303,12 +305,8 @@ def main():
 
 		if "çevir" in k:
 			if komut_işlendi == False:
-				if "i̇ngilizceye" in k:
-					k = k.replace("i̇ngilizceye", "ingilizceye")
 				if "ingilizce'ye" in k:
 					k = k.replace("ingilizce'ye", "ingilizceye")
-				if "i̇ngilizce" in k:
-					k = k.replace("i̇ngilizce", "ingilizce")
 				for i in diller:
 					if dil_algıla(i) in k:
 						t = Translator()
@@ -326,7 +324,7 @@ def main():
 						komut_işlendi = True
 						break
 
-		if "hatırlatmaları" in k:
+		if "liste" in k:
 			with open("reminders.txt" , "r+", encoding='utf8') as f:
 				konuş("Listeliyorum")
 				text = ""
