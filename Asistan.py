@@ -310,6 +310,7 @@ def main():
 				for i in diller:
 					if dil_algıla(i) in k:
 						t = Translator()
+						said = False
 						try:
 							dil = dildict[re.search(dil_regex[0][0], k).group()]
 						except AttributeError:
