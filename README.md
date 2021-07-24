@@ -1,9 +1,4 @@
 # evasistani
-<b>Bilinen sorunlar:</b>
-- Her ilin hava durumunu söyleyemeyebilir
-- Asistanın başlangıçta bir ismi olmadığı için dediklerinizin hepsini dinler, program yanlış anlayabilir.
-
-
 <b>Soru sorma formatları:</b>
 
 Youtube'dan şarkı açma - (şarkı ismi) çal
